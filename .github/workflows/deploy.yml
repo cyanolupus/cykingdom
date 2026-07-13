@@ -1,0 +1,70 @@
+name: Deploy to Cloudflare Workers
+
+permissions:
+  contents: read
+
+concurrency:
+  group: deploy
+  cancel-in-progress: false
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment: cykingdom
+    steps:
+      - uses: actions/checkout@v4
+      
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          check-latest: true
+          
+      - name: Setup Wrangler
+        run: npm install wrangler@4.110.0 --save-dev
+        
+      - name: Setup Toolchain
+        uses: dtolnay/rust-toolchain@master
+        with:
+          toolchain: stable
+          targets: wasm32-unknown-unknown
+          
+      - uses: Swatinem/rust-cache@v2
+
+      - uses: jetli/wasm-pack-action@v0.4.0
+        with:
+          version: 'latest'
+
+      - name: Check code (Clippy)
+        run: cargo clippy -- -D warnings
+        
+      - uses: cargo-bins/cargo-binstall@main
+      - name: Install worker-build
+        run: cargo binstall worker-build -y
+        
+      - name: Deploy
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CF_API_TOKEN }}
+          ADMIN_SECRET: ${{ secrets.ADMIN_SECRET }}
+        run: |
+          if [ -n "$ADMIN_SECRET" ]; then
+            echo "$ADMIN_SECRET" | npx wrangler secret put ADMIN_SECRET
+          fi
+          
+          # Auto-create D1 database if it doesn't exist, and inject ID into wrangler.toml
+          DB_UUID=$(npx wrangler d1 info cykingdom-db --json 2>/dev/null | jq -r '.uuid' || echo "")
+          if [ -z "$DB_UUID" ] || [ "$DB_UUID" = "null" ]; then
+            echo "Database not found. Creating cykingdom-db..."
+            npx wrangler d1 create cykingdom-db
+            DB_UUID=$(npx wrangler d1 info cykingdom-db --json | jq -r '.uuid')
+          fi
+          echo "Using D1 Database ID: $DB_UUID"
+          sed -i "s/database_id = \".*\"/database_id = \"$DB_UUID\"/" wrangler.toml
+          
+          npx wrangler d1 execute cykingdom-db --remote --file schema.sql
+          npx wrangler deploy --var ALLOWED_ORIGIN:${{ vars.DOMAIN }} --route "${{ vars.DOMAIN }}/*"

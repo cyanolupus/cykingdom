@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>サイ王国🦏</title>
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+    <link rel="stylesheet" href="/style.css">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+</head>
+<body>
+    <div id="app" class="app-container">
+        
+        <!-- Not Logged In View -->
+        <div id="auth-view" class="view active">
+            <div class="hero">
+                <h1 class="display">サイ王国🦏</h1>
+                <p class="subtitle">サイ王国🦏へようこそ！</p>
+            </div>
+            
+            <div class="input-group">
+                <input type="text" id="username-input" placeholder="ユーザー名" autocomplete="username webauthn">
+            </div>
+            <button id="register-btn" class="btn primary">アカウント作成</button>
+            <button id="login-btn" class="btn secondary">サイ🦏ンイン</button>
+            
+            <div style="margin-top: 32px; text-align: center;">
+                <a href="#ranking" class="btn secondary" style="display: inline-block; text-decoration: none;">👑 ランキングを見る</a>
+            </div>
+        </div>
+
+        <!-- Logged In View -->
+        <div id="main-view" class="view">
+            <header class="toolbar">
+                <div style="display: flex; flex-direction: column; align-items: flex-start; justify-content: center;">
+                    <span style="font-size: 13px; color: var(--text-secondary); font-weight: 500;">あなたのポイント🦏</span>
+                    <span style="font-size: 20px; font-weight: 700; letter-spacing: -0.02em; display: flex; align-items: baseline; gap: 2px;">
+                        <span id="points-display">0</span>
+                        <span style="font-size: 15px; color: var(--text-secondary); font-weight: 500;">pt</span>
+                    </span>
+                </div>
+                <div class="right-items" style="gap: 16px;">
+                    <a href="#ranking" class="nav-btn" style="text-decoration: none; padding: 0; font-size: 22px;">👑</a>
+                    <button id="profile-btn" class="nav-btn" style="padding: 0;">
+                        <div id="user-icon-container" style="position: relative; width: 32px; height: 32px; border-radius: 50%; overflow: hidden; border: 1px solid var(--border-color); flex-shrink: 0; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+                            <div id="user-icon-fallback" style="width: 100%; height: 100%; background: var(--bg-card); display: flex; align-items: center; justify-content: center; font-size: 16px;">🦏</div>
+                            <img id="user-icon" src="" alt="Profile" style="width: 100%; height: 100%; object-fit: cover; display: none; position: absolute; top: 0; left: 0;">
+                        </div>
+                    </button>
+                </div>
+            </header>
+
+            <main>
+                <div class="hero">
+                    <h1 class="display" style="margin-bottom: 8px;">サイ王国🦏</h1>
+                    <p class="subtitle">サイポイントをみんなとシェアしましょう</p>
+                </div>
+
+                <div class="card">
+                    <div class="list-item">
+                        <h2 style="display: flex; justify-content: space-between; align-items: center;">
+                            <span>プレゼントボックス 🎁</span>
+                            <span id="gift-badge" class="badge" style="display: none;">0</span>
+                        </h2>
+                        <div id="gift-list" style="display: flex; flex-direction: column; margin-top: 8px;">
+                            <p>プレゼントはありません</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="list-item">
+                        <h2>サイポイントガチャ 🎁</h2>
+                        <p>現在のサイポイントガチャは毎日0時(JST)更新です</p>
+                        <button id="gacha-btn" class="btn primary" style="margin-top: 8px;">サイポイントガチャを引く！</button>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="list-item">
+                        <h2>サイポイントじゃんけん ✌️</h2>
+                        <p>勝てば相手のポイントがもらえ負ければポイントは没収となります。</p>
+                        
+                        <div class="janken-controls">
+                            <button class="janken-btn play-btn" data-hand="rock">✊</button>
+                            <button class="janken-btn play-btn" data-hand="paper">✋</button>
+                            <button class="janken-btn play-btn" data-hand="scissors">✌️</button>
+                        </div>
+                        <div id="janken-result" class="result-message"></div>
+                    </div>
+                    <div class="list-item">
+                        <h2 style="font-size: 17px; margin-bottom: 8px;">直近のじゃんけん履歴</h2>
+                        <div id="history-list" style="max-height: 200px; overflow-y: auto; font-size: 15px;">
+                            <p>直近のじゃんけん履歴はありません</p>
+                        </div>
+                    </div>
+                </div>
+
+            </main>
+        </div>
+
+
+        <!-- Ranking View -->
+        <div id="ranking-view" class="view">
+            <header class="toolbar">
+                <button class="nav-btn back-btn" style="margin-left: -8px;">
+                    <span style="font-size: 20px; vertical-align: middle;">‹</span> 戻る
+                </button>
+                <h1 style="font-size: 17px; margin: 0; font-weight: 600; position: absolute; left: 50%; transform: translateX(-50%);">ランキング</h1>
+                <div style="width: 60px;"></div> <!-- Spacer -->
+            </header>
+
+            <main>
+                <div class="hero">
+                    <h1 class="display">👑 ランキング</h1>
+                    <p class="subtitle">Top 10 サイ王国🦏の猛者たち</p>
+                </div>
+
+                <div class="card">
+                    <div class="list-item">
+                        <div id="ranking-list" style="max-height: none; font-size: 15px;">
+                            <p>読み込み中...</p>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+
+        <!-- Profile View -->
+        <div id="profile-view" class="view">
+            <header class="toolbar">
+                <button class="nav-btn back-btn" style="margin-left: -8px;">
+                    <span style="font-size: 20px; vertical-align: middle;">‹</span> 戻る
+                </button>
+                <h1 style="font-size: 17px; margin: 0; font-weight: 600; position: absolute; left: 50%; transform: translateX(-50%);">プロフィール</h1>
+                <div style="width: 60px;"></div> <!-- Spacer -->
+            </header>
+
+            <main>
+                <div class="hero">
+                    <h1 class="display" style="margin-bottom: 8px; display: flex; align-items: center; justify-content: center; gap: 8px;">
+                        <div id="profile-icon-container" style="position: relative; display: inline-block; cursor: pointer;">
+                            <div id="profile-icon-fallback" style="width: 60px; height: 60px; border-radius: 50%; background: var(--bg-card); display: flex; align-items: center; justify-content: center; font-size: 30px; border: 1px solid var(--border-color);">🦏</div>
+                            <img id="profile-icon" src="" alt="" style="width: 60px; height: 60px; border-radius: 50%; display: none; object-fit: cover; position: absolute; top: 0; left: 0;">
+                            <div id="profile-icon-overlay" style="display: none; position: absolute; bottom: -2px; right: -2px; background: rgba(0,0,0,0.6); color: white; border-radius: 50%; width: 22px; height: 22px; font-size: 12px; align-items: center; justify-content: center; pointer-events: none;">✏️</div>
+                        </div>
+                        <span id="profile-username">User</span>
+                    </h1>
+                    <p class="subtitle">順位: <span id="profile-rank">1</span>位 | <span id="profile-points">0</span> サイポイント</p>
+                    <button id="share-profile-btn" class="btn" style="margin-top: 12px; font-size: 14px; padding: 6px 12px; width: auto; background: var(--bg-card); border: 1px solid var(--border-color); color: var(--text-color);">🔗 このプロフィールをシェア</button>
+                </div>
+
+                <div id="profile-my-settings" style="display: none; margin-bottom: 24px;">
+                    <div style="display: flex; gap: 12px; justify-content: center; margin-top: 16px;">
+                        <button id="logout-btn" class="btn" style="width: auto; background: rgba(255, 59, 48, 0.1); color: #ff3b30; border: none; padding: 12px 24px; font-weight: 600;">🚪 ログアウト</button>
+                    </div>
+                    <input type="file" id="icon-upload" accept="image/jpeg, image/png, image/webp" style="display: none;">
+                </div>
+
+                <div class="card" id="admin-panel" style="display: none; margin-bottom: 16px;">
+                    <div class="list-item">
+                        <h2>👑 管理者パネル</h2>
+                        <p>全ユーザーへギフト配布</p>
+                        <input type="number" id="admin-gift-points" placeholder="ポイント数" class="input" style="margin-top: 8px;">
+                        <input type="text" id="admin-gift-desc" placeholder="説明 (例: 記念日プレゼント)" class="input" style="margin-top: 8px;">
+                        <button id="admin-gift-btn" class="btn primary" style="margin-top: 8px;">全ユーザーに配布</button>
+                    </div>
+                </div>
+
+                <h2>デバイス一覧</h2>
+                <div id="credentials-list">
+                    <div class="card">
+                        <div class="list-item">
+                            <p style="margin: 0;">読み込み中...</p>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <!-- Notification Toast -->
+    <div id="toast" class="toast hidden"></div>
+
+    <script type="module" src="/app.js"></script>
+</body>
+</html>

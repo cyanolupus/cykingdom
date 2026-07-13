@@ -1,0 +1,15 @@
+name = "cykingdom"
+main = "build/worker/shim.mjs"
+compatibility_date = "2024-04-01"
+
+[build]
+command = "worker-build --release"
+cwd = "."
+watch_dir = "src"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "cykingdom-db"
+database_id = "e6d17aca-6e97-4cda-81f7-e3578ea99d3b"
+preview_database_id = "DB"
+migrations_dir = "migrations"

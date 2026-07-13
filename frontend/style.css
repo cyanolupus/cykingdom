@@ -1,0 +1,363 @@
+:root {
+    /* iOS Light Mode */
+    --bg-system: #f2f2f7;
+    --bg-grouped: #ffffff;
+    --text-primary: #000000;
+    --text-secondary: #8e8e93;
+    --text-tertiary: #c7c7cc;
+    --accent: #007aff;
+    --separator: #c6c6c8;
+    --nav-bg: rgba(242, 242, 247, 0.8);
+    
+    /* Apple Spring Easing */
+    --spring: cubic-bezier(0.175, 0.885, 0.32, 1.1);
+    --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@media (prefers-color-scheme: dark) {
+    :root {
+        /* iOS Dark Mode */
+        --bg-system: #000000;
+        --bg-grouped: #1c1c1e;
+        --text-primary: #ffffff;
+        --text-secondary: #8e8e93;
+        --text-tertiary: #48484a;
+        --accent: #0a84ff;
+        --separator: #38383a;
+        --nav-bg: rgba(0, 0, 0, 0.75);
+    }
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    -webkit-tap-highlight-color: transparent;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Icons", "Helvetica Neue", Helvetica, Arial, sans-serif;
+    background-color: var(--bg-system);
+    color: var(--text-primary);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    min-height: 100vh;
+    font-size: 17px;
+    line-height: 1.3;
+}
+
+/* Typography Hierarchy */
+h1, .display {
+    font-size: 34px;
+    font-weight: 700;
+    letter-spacing: -0.04em;
+    line-height: 1.2;
+    margin-bottom: 24px;
+}
+
+h2 {
+    font-size: 22px;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    margin-bottom: 12px;
+}
+
+p {
+    font-size: 17px;
+    color: var(--text-secondary);
+    letter-spacing: -0.02em;
+    margin-bottom: 16px;
+}
+
+.subtitle {
+    font-size: 15px;
+    color: var(--text-secondary);
+    letter-spacing: -0.01em;
+    margin-bottom: 24px;
+}
+
+/* Layout */
+.app-container {
+    max-width: 100%;
+    margin: 0 auto;
+    padding-bottom: 60px;
+}
+
+@media (min-width: 768px) {
+    .app-container {
+        max-width: 600px;
+        padding-top: 40px;
+    }
+}
+
+/* Navigation Bar (Translucent Chrome) */
+.toolbar {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    
+    /* Edge-to-edge breakout */
+    width: 100vw;
+    margin-left: calc(50% - 50vw);
+    padding: 12px calc(50vw - 50% + 16px);
+    
+    background: var(--nav-bg);
+    backdrop-filter: blur(20px) saturate(180%);
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
+    border-bottom: 0.5px solid var(--separator);
+    margin-bottom: 24px;
+}
+
+.toolbar .right-items {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+/* Navigation Buttons */
+.nav-btn {
+    background: transparent;
+    border: none;
+    color: var(--accent);
+    font-size: 17px;
+    font-weight: 400;
+    cursor: pointer;
+    padding: 4px 8px;
+    transition: opacity 0.2s;
+}
+
+.nav-btn:active {
+    opacity: 0.5;
+}
+
+/* Page Views */
+.view {
+    display: none;
+    opacity: 0;
+    padding: 0 16px;
+}
+
+.view.active {
+    display: block;
+    animation: fadeIn 0.4s var(--ease-out) forwards;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.hero {
+    text-align: left;
+    margin-bottom: 32px;
+    padding-top: 16px;
+}
+
+/* iOS Inset Grouped Lists (The core structure) */
+.card {
+    background: var(--bg-grouped);
+    border-radius: 12px;
+    margin-bottom: 24px;
+    padding: 0; /* padding is inside list items */
+    overflow: hidden;
+}
+
+.list-item {
+    display: flex;
+    flex-direction: column;
+    padding: 16px;
+    border-bottom: 0.5px solid var(--separator);
+}
+
+.list-item:last-child {
+    border-bottom: none;
+}
+
+/* Forms & Inputs */
+input[type="text"], input[type="range"] {
+    width: 100%;
+    font-size: 17px;
+    padding: 16px;
+    border: none;
+    background: transparent;
+    color: var(--text-primary);
+    outline: none;
+}
+
+input[type="text"]::placeholder {
+    color: var(--text-tertiary);
+}
+
+.input-group {
+    background: var(--bg-grouped);
+    border-radius: 12px;
+    margin-bottom: 24px;
+    overflow: hidden;
+}
+
+.input-group input {
+    border-bottom: 0.5px solid var(--separator);
+}
+.input-group input:last-child {
+    border-bottom: none;
+}
+
+/* Primary iOS Buttons */
+.btn {
+    display: block;
+    width: 100%;
+    background: var(--bg-grouped);
+    color: var(--accent);
+    font-size: 17px;
+    font-weight: 500;
+    padding: 16px;
+    border: none;
+    border-radius: 12px;
+    text-align: center;
+    cursor: pointer;
+    margin-bottom: 16px;
+    transition: background-color 0.2s, transform 0.2s var(--ease-out);
+}
+
+.btn:active {
+    background-color: var(--separator);
+    transform: scale(0.98);
+}
+
+.btn.primary {
+    background-color: var(--accent);
+    color: #ffffff;
+    font-weight: 600;
+}
+
+.btn.primary:active {
+    background-color: var(--accent);
+    opacity: 0.8;
+}
+
+.btn.secondary {
+    background-color: transparent;
+}
+
+/* Interactive Janken Grid */
+.janken-controls {
+    display: flex;
+    gap: 12px;
+    margin-top: 16px;
+}
+
+.janken-btn {
+    flex: 1;
+    background: var(--bg-grouped);
+    border: none;
+    border-radius: 16px;
+    font-size: 40px;
+    padding: 32px 0;
+    cursor: pointer;
+    transition: transform 0.3s var(--spring), background-color 0.2s;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+}
+
+@media (prefers-color-scheme: dark) {
+    .janken-btn { box-shadow: none; }
+}
+
+.janken-btn:active:not(:disabled) {
+    transform: scale(0.92);
+    background-color: var(--separator);
+}
+
+.janken-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    transform: scale(0.95);
+}
+
+.result-message {
+    text-align: center;
+    font-size: 17px;
+    font-weight: 500;
+    color: var(--accent);
+    margin-top: 24px;
+    min-height: 24px;
+}
+
+/* Badges */
+.badge {
+    background: var(--separator);
+    color: var(--text-primary);
+    padding: 2px 8px;
+    border-radius: 10px;
+    font-size: 13px;
+    font-weight: 500;
+}
+
+/* Toasts (iOS Notification Style) */
+.toast {
+    position: fixed;
+    top: 16px; /* iOS notifications drop from top */
+    left: 50%;
+    transform: translateX(-50%) translateY(0);
+    background: rgba(28, 28, 30, 0.85);
+    backdrop-filter: blur(20px) saturate(180%);
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
+    color: #ffffff;
+    padding: 16px 24px;
+    border-radius: 20px;
+    font-size: 15px;
+    font-weight: 500;
+    z-index: 1000;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+    transition: transform 0.5s var(--spring), opacity 0.5s var(--ease-out);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+@media (prefers-color-scheme: dark) {
+    .toast {
+        background: rgba(44, 44, 46, 0.85);
+    }
+}
+
+.toast.hidden {
+    transform: translateX(-50%) translateY(-120%);
+    opacity: 0;
+    pointer-events: none;
+}
+
+/* Profile List Customization */
+#credentials-list {
+    margin-top: 24px;
+}
+
+.cred-item {
+    background: var(--bg-grouped);
+    border-radius: 12px;
+    padding: 16px;
+    margin-bottom: 12px;
+    font-size: 14px;
+}
+
+.cred-item div {
+    margin-bottom: 8px;
+    color: var(--text-secondary);
+}
+
+.cred-item strong {
+    color: var(--text-primary);
+    font-weight: 600;
+}
+
+.mt-4 { margin-top: 32px; }
+
+/* Accessibility */
+@media (prefers-reduced-motion: reduce) {
+    * {
+        transition-duration: 0.01ms !important;
+        animation-duration: 0.01ms !important;
+    }
+}
